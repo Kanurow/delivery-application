@@ -1,6 +1,7 @@
 package com.rowland.engineering.byteworks.service;
 
 import com.rowland.engineering.byteworks.dto.*;
+import com.rowland.engineering.byteworks.exception.DeliveryNotFoundException;
 import com.rowland.engineering.byteworks.model.Delivery;
 import com.rowland.engineering.byteworks.model.DeliveryGenerated;
 import com.rowland.engineering.byteworks.model.User;
@@ -31,7 +32,7 @@ public class DeliveryService {
                 .location(request.getLocation())
                 .build();
         Delivery savedDelivery = deliveryRepository.save(newDelivery);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Delivery with location name " +savedDelivery.getLocation());
+        return ResponseEntity.status(HttpStatus.OK).body("Delivery with location name " +savedDelivery.getLocation() + " has been created");
     }
     public List<DeliveryResponse> getAllDeliveries() {
         List<Delivery> allDelivery = deliveryRepository.findAll();
@@ -62,7 +63,7 @@ public class DeliveryService {
 
         Delivery updatedInfo = deliveryRepository.save(updatedDelivery);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body("Delivery with id " + foundDelivery.getId() + " has been updated to " +
+        return ResponseEntity.status(HttpStatus.OK).body("Delivery with id " + foundDelivery.getId() + " has been updated to " +
                 "location: "+ updatedInfo.getLocation() +
                 " distance: "+ updatedInfo.getDistance()  +
                 " and clearing cost: " + updatedInfo.getClearingCost());
@@ -73,8 +74,9 @@ public class DeliveryService {
         return new ApiResponse(true, "Delivery has been deleted");
     }
 
-    public Optional<Delivery> getDelivery(Long deliveryId) {
-        return deliveryRepository.findById(deliveryId);
+    public Delivery getDelivery(Long deliveryId) {
+        return deliveryRepository.findById(deliveryId)
+                .orElseThrow(() -> new DeliveryNotFoundException("Delivery not found with ID: " + deliveryId));
     }
 
 

@@ -61,16 +61,13 @@ public class DeliveryController {
         return new ResponseEntity<ApiResponse>(deliveryService.deleteDelivery(id),HttpStatus.ACCEPTED);
     }
 
-//    @ResponseStatus(value = HttpStatus.FOUND)
     @GetMapping("/view/{deliveryId}")
-    public ResponseEntity<Optional<Delivery>> getDelivery(@PathVariable Long deliveryId) {
-        Optional<Delivery> delivery = deliveryService.getDelivery(deliveryId);
-        System.out.println("DELIVERY DELIVERY"+delivery);
-        return ResponseEntity.status(HttpStatus.FOUND).body(delivery);
+    public ResponseEntity<Delivery> getDelivery(@PathVariable Long deliveryId) {
+        Delivery delivery = deliveryService.getDelivery(deliveryId);
+        return ResponseEntity.status(HttpStatus.OK).body(delivery);
     }
 
 
-//    @ResponseStatus(value = HttpStatus.CREATED)
     @PutMapping("/updateDeliveryInformation/{id}")
     public ResponseEntity<String> updateDeliveryInformation(@RequestParam("location") String location,
                                                         @RequestParam("clearingCost") Double clearingCost,

@@ -3,6 +3,7 @@ package com.rowland.engineering.byteworks.security;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rowland.engineering.byteworks.model.User;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@NoArgsConstructor
 @Data
 public class UserPrincipal implements UserDetails {
     private Long id;

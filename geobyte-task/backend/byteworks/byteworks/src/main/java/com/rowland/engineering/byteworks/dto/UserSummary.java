@@ -16,4 +16,6 @@ public class UserSummary {
     private String name;
     private String email;
     private String role;
+
+
 }

@@ -17,9 +17,9 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -38,8 +38,6 @@ public class DeliveryIntegrationTest {
     private DeliveryService deliveryService;
 
 
-
-
     @Test
     @WithMockUser(username = "rowland", password = "rowland", roles = "STAFF")
     @DisplayName("Should return the appropriate HTTP status response ")
@@ -54,8 +52,10 @@ public class DeliveryIntegrationTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/delivery/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
-                .andExpect(status().isCreated());
+                .andExpect(status().isOk());
     }
+
+
 
     @Test
     @WithMockUser(username = "rowland", password = "rowland", roles = "STAFF")
@@ -77,12 +77,13 @@ public class DeliveryIntegrationTest {
 
 
     @Test
+    @DisplayName("Successfully gets all delivery routes created")
     @WithMockUser(username = "rowland", password = "rowland", roles = "STAFF")
-    @DisplayName("Should return the appropriate HTTP status response(FOUND)")
-    void getAllDeliveries_shouldReturnFound() throws Exception {
+    public void getAllDeliveries() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/delivery/getAllDeliveries")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isFound());
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
@@ -92,7 +93,7 @@ public class DeliveryIntegrationTest {
         // Perform a GET request to the endpoint
         mockMvc.perform(MockMvcRequestBuilders.get("/api/delivery/getAllGeneratedDeliveries")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isFound())
+                .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").isArray());
     }
 
@@ -115,7 +116,7 @@ public class DeliveryIntegrationTest {
         // Perform a GET request to the endpoint
         mockMvc.perform(MockMvcRequestBuilders.get("/api/delivery/view/{deliveryId}", deliveryId)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isFound());
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
 
@@ -133,7 +134,7 @@ public class DeliveryIntegrationTest {
                         .param("clearingCost", String.valueOf(clearingCost))
                         .param("distance", String.valueOf(distance))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isCreated());
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
 

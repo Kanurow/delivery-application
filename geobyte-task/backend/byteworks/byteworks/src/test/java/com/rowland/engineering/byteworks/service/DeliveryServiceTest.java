@@ -1,6 +1,7 @@
 package com.rowland.engineering.byteworks.service;
 
 import com.rowland.engineering.byteworks.dto.*;
+import com.rowland.engineering.byteworks.exception.DeliveryNotFoundException;
 import com.rowland.engineering.byteworks.model.Delivery;
 import com.rowland.engineering.byteworks.model.DeliveryGenerated;
 import com.rowland.engineering.byteworks.repository.DeliveryGeneratedRepository;
@@ -51,10 +52,9 @@ class DeliveryServiceTest {
         when(deliveryRepository.save(ArgumentMatchers.any(Delivery.class))).thenReturn(savedDelivery);
 
         ResponseEntity<String> response = deliveryService.createDelivery(createDeliveryRequest);
-
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertTrue(response.getBody().contains("Delivery with ID: " + savedDelivery.getId() +
-                " has been created successfully with location name " + savedDelivery.getLocation()));
+        assertTrue(response.getBody().contains("Delivery with location name " + savedDelivery.getLocation() +
+                " has been created"));
 
         verify(deliveryRepository, times(1)).save(argThat(
                 delivery -> delivery.getLocation().equals(createDeliveryRequest.getLocation())
@@ -137,29 +137,42 @@ class DeliveryServiceTest {
     }
 
     @Test
-    @DisplayName("Test the positive case of where product was found")
-    void getDeliveryFound() {
-        Delivery mockDelivery = new Delivery();
-        when(deliveryRepository.findById(1L)).thenReturn(Optional.of(mockDelivery));
+    public void getDelivery() {
+        Long deliveryId = 1L;
+        Delivery mockDelivery = new Delivery(1L,"Abuja",26.4,2.0);
 
-        Optional<Delivery> result = deliveryService.getDelivery(1L);
+        when(deliveryRepository.findById(deliveryId)).thenReturn(Optional.of(mockDelivery));
+        Delivery result = deliveryService.getDelivery(deliveryId);
 
-        assertTrue(result.isPresent());
-        assertEquals(mockDelivery, result.get());
+        assertNotNull(result);
+        assertEquals(mockDelivery, result);
+        assertEquals(mockDelivery.getLocation(), result.getLocation());
+        assertEquals(mockDelivery.getId(), result.getId());
+        assertEquals(mockDelivery.getDistance(), result.getDistance());
+        assertEquals(mockDelivery.getClearingCost(), result.getClearingCost());
+    }
 
-        verify(deliveryRepository, times(1)).findById(eq(1L));
+
+    @Test
+    public void getDeliveryNotFoundException() {
+        // Arrange
+        Long deliveryId = 1L;
+        when(deliveryRepository.findById(deliveryId)).thenReturn(java.util.Optional.empty());
+
+        assertThrows(DeliveryNotFoundException.class, () -> deliveryService.getDelivery(deliveryId));
     }
 
     @Test
-    @DisplayName("Test the negative cast of where delivery is not found")
-    void getDeliveryNotFound() {
-        when(deliveryRepository.findById(1L)).thenReturn(Optional.empty());
+    public void testGetDeliveryNotFoundException() {
+        // Arrange
+        Long deliveryId = 1L;
 
-        Optional<Delivery> result = deliveryService.getDelivery(1L);
+        when(deliveryRepository.findById(deliveryId)).thenReturn(java.util.Optional.empty());
 
-        assertTrue(result.isEmpty());
+        DeliveryNotFoundException exception = assertThrows(DeliveryNotFoundException.class,
+                () -> deliveryService.getDelivery(deliveryId));
 
-        verify(deliveryRepository, times(1)).findById(eq(1L));
+        assertEquals("Delivery not found with ID: " + deliveryId, exception.getMessage());
     }
 
     @Test
