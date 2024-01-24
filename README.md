@@ -12,7 +12,7 @@ The project is still in development not in production. For this reason it is not
 - run the command
 `git clone`
 
-https://github.com/Kanurow/byte-works
+https://github.com/Kanurow/simple-delivery-application/tree/main
 Gives you a copy of the project on your local drive. Change directory into the folder named 'frontend' and geobyte/geobyte-task folder.
 
 - Install dependencies
